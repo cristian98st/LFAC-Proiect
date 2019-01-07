@@ -1,9 +1,11 @@
-numar a;
-numar b;
+numar a, numar b;
+caracter c;
 incepe
 a=2;
 b=6;
+c=z;
 afiseaza b-a;
 afiseaza b;
-afiseaza b/a;
+afiseaza b+a;
+afiseaza c;
 sfarsit

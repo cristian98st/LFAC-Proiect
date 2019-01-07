@@ -16,7 +16,7 @@
 %start program
 %token print
 %token exit_command
-%token TIP BEGN END 
+%token TIP BEGN END IF THEN ELSE
 %token <num> numar
 %token <character> caracter
 %type <num> linie expresie termen
@@ -28,6 +28,7 @@ program : declaratii bloc   {printf("Compilare reusita\n");}
 
 declaratii : declaratie ';'
             | declaratii declaratie ';'
+            | declaratie ', ' declaratii
             ;
 
 declaratie: TIP caracter
