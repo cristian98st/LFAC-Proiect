@@ -13,24 +13,53 @@
 %}
 
 %union {int num; char character;}
-%start linie
+%start program
 %token print
 %token exit_command
+%token TIP BEGN END 
 %token <num> numar
 %token <character> caracter
 %type <num> linie expresie termen
 %type <character> asignare
 %%
 
-linie   : asignare ';'                  {;}
-            | exit_command ';'          {exit(EXIT_SUCCESS);}
-            | print expresie ';'        {printf("%d\n", $2);}
-            | linie asignare ';'        {;}
-            | linie print expresie ';'  {printf("%d\n", $3);}
-            | linie exit_command ';'    {exit(EXIT_SUCCESS);}
+program : declaratii bloc   {printf("Compilare reusita\n");}
+        ;
+
+declaratii : declaratie ';'
+            | declaratii declaratie ';'
+            ;
+
+declaratie: TIP caracter
+            | TIP caracter '(' parametrii ')'
+            | TIP caracter '(' ')'
+            ;
+
+parametrii: parametru
+            | parametrii ',' parametru
+            ;
+
+parametru: TIP caracter
+            ;
+
+bloc    : BEGN instructiuni END
+            ;
+
+instructiuni: linie ';'
+            | instructiuni linie ';'
+            ;
+
+linie   : asignare                      {;}
+            | exit_command              {exit(EXIT_SUCCESS);}
+            | print expresie            {printf("%d", $2);}
+            | linie asignare            {;}
+            | linie print expresie      {printf("%d", $3);}
+            | linie exit_command        {exit(EXIT_SUCCESS);}
             ;
 
 asignare: caracter '=' expresie         {updateVal($1, $3);}
+            | caracter '=' caracter     {updateVal($1, getVal($3));}
+            ;
 
 expresie: termen                        {$$=$1;}
             | expresie '+' termen       {$$=$1+$3;}
@@ -38,6 +67,10 @@ expresie: termen                        {$$=$1;}
             | expresie '*' termen       {$$=$1*$3;}
             | expresie '/' termen       {if($3==0) {yyerror("Impartirea la 0 nu are sens");}
                                         else $$=$1/$3;}
+            ;
+
+termeni : termen
+            | termeni ',' termen
             ;
 
 termen  : numar
@@ -81,4 +114,5 @@ int main(int argc, char** argv){
 	return yyparse ( );
 }
 
-void yyerror (char *s) {fprintf (stderr, "%s\n", s);} 
+void yyerror (char *s) {fprintf (stderr, "%s\n", s);
+printf("La linia %d\n", yylineno);} 
