@@ -5,8 +5,11 @@
     #include <stdlib.h>
     #include <ctype.h>
     int symbols[52];
-    int symbolVal(char symbol);
-    void updateSymbolVal(char symbol, int val);
+    int getVal(char symbol);
+    void updateVal(char symbol, int val);
+    extern FILE* yyin;
+    extern char* yytext;
+    extern int yylineno;
 %}
 
 %union {int num; char character;}
@@ -27,17 +30,18 @@ linie   : asignare ';'                  {;}
             | linie exit_command ';'    {exit(EXIT_SUCCESS);}
             ;
 
-asignare: caracter '=' expresie         {updateSymbolVal($1, $3);}
+asignare: caracter '=' expresie         {updateVal($1, $3);}
 
 expresie: termen                        {$$=$1;}
             | expresie '+' termen       {$$=$1+$3;}
             | expresie '-' termen       {$$=$1-$3;}
             | expresie '*' termen       {$$=$1*$3;}
-            | expresie "/" termen       {$$=$1/$3;}
+            | expresie '/' termen       {if($3==0) {yyerror("Impartirea la 0 nu are sens");}
+                                        else $$=$1/$3;}
             ;
 
 termen  : numar
-            | caracter                      {$$=symbolVal($1);}
+            | caracter                      {$$=getVal($1);}
             ;
 
 %%
@@ -54,26 +58,26 @@ int computeSymbolIndex(char token)
 } 
 
 /* returns the value of a given symbol */
-int symbolVal(char symbol)
+int getVal(char symbol)
 {
 	int bucket = computeSymbolIndex(symbol);
 	return symbols[bucket];
 }
 
 /* updates the value of a given symbol */
-void updateSymbolVal(char symbol, int val)
+void updateVal(char symbol, int val)
 {
 	int bucket = computeSymbolIndex(symbol);
 	symbols[bucket] = val;
 }
 
-int main (void) {
+int main(int argc, char** argv){
 	/* init symbol table */
 	int i;
 	for(i=0; i<52; i++) {
 		symbols[i] = 0;
 	}
-
+    yyin=fopen(argv[1],"r");
 	return yyparse ( );
 }
 

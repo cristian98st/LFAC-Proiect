@@ -6,4 +6,5 @@ all:
 clean:
 	rm -r lex.yy.c
 	rm -r y.tab.c
+	rm -r y.tab.h
 	rm a.out

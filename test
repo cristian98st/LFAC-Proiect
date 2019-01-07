@@ -1,0 +1,7 @@
+a=12;
+b=2;
+c=3;
+d=0;
+afiseaza a/b;
+afiseaza b*3;
+termina;
