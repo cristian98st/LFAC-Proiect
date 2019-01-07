@@ -20,6 +20,7 @@
 %token class_definition
 %token acces_specifier
 %token function_definition
+%token main_definition
 %token <num> numar
 %token <character> caracter
 %type <num> linie expresie termen
@@ -49,8 +50,8 @@ functions   :functions function
 class   :class_definition '{' acces_specifier ':' linie functions '}' ';'
         ;
 
-function    :function_definition '(' parameters ')' '{' linie operations return termen '}'
-            |function_definition '('  ')' '{' linie operations return termen '}'
+function    :function_definition '(' parameters ')' '{' operations return termen '}'
+            |function_definition '('  ')' '{' operations return termen '}'
             ;
 
 parameters  :parameters termen
@@ -65,10 +66,11 @@ operations  :operations operatie linie
             |linie
             ;
 
-main    :main_definiton '(' parameters ')' '{' linie operations return termen '}'
-        |main_definiton '('  ')' '{' linie operations return termen '}'
+main    :main_definiton '(' parameters ')' '{' operations return termen '}'
+        |main_definiton '('  ')' '{' operations return termen '}'
         ; 
 
+operatie    :if '(' ceva ')' '{' operations '}' 
 
 
 
@@ -95,7 +97,7 @@ termen  : numar
             ;
 
 %%
-
+ 
 int computeSymbolIndex(char token)
 {
 	int idx = -1;

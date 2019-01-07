@@ -19,10 +19,16 @@
 "float "[a-zA-Z]+	{return function_definition;}
 "int main"			{return main_definition;}
 "void main"			{return main_definition;}
+"if"				{return	IF;}
+"then"				{return THEN;}
+"else"				{return ELSE;}
+"while"				{return WHILE;}
+"do"				{return DO;}
+'for'				{return FOR;}
 [a-zA-Z]            {yylval.character = yytext[0]; return caracter;}
 [0-9]+              {yylval.num = atoi(yytext); return numar;}
 [ \t\n]             ;
-[-+=;\/\*{}:<>]       {return yytext[0];}
+[-+=;\/\*{}:<>%&!]       {return yytext[0];}
 .                   {ECHO; yyerror("caracter invalid");}
 
 %%
