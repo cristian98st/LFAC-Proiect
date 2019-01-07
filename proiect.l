@@ -10,6 +10,17 @@
 "sfarsit" {return END;}
 "afiseaza"          {return print;}
 "termina"           {return exit_command;}
+"daca"              {return IF;}
+"atunci"            {return THEN;}
+"altfel"            {return ELSE;}
+"cattimp"           {return WHILE;}
+"executa"           {return DO;}
+"=="                {return EQ;}
+"!="                {return NEQ;}
+"<="                {return LE;}
+"=<"                {return LE;}
+">="                {return ME;}
+"=>"                {return ME;}
 [a-zA-Z]            {yylval.character = yytext[0]; return caracter;}
 [0-9]+              {yylval.num = atoi(yytext); return numar;}
 [ \t]               ;

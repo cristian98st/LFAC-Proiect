@@ -10,17 +10,23 @@
     extern FILE* yyin;
     extern char* yytext;
     extern int yylineno;
+    #define true 1
+    #define false 0
 %}
 
 %union {int num; char character;}
 %start program
 %token print
 %token exit_command
-%token TIP BEGN END IF THEN ELSE
+%token TIP BEGN END IF THEN ELSE WHILE DO EQ NEQ LE ME
 %token <num> numar
 %token <character> caracter
 %type <num> linie expresie termen
 %type <character> asignare
+%type <num> comparatie
+%left EQ LE ME NEQ
+%left '+''-'
+%left '*''/'
 %%
 
 program : declaratii bloc   {printf("Compilare reusita\n");}
@@ -28,7 +34,7 @@ program : declaratii bloc   {printf("Compilare reusita\n");}
 
 declaratii : declaratie ';'
             | declaratii declaratie ';'
-            | declaratie ', ' declaratii
+            | declaratie ',' declaratii
             ;
 
 declaratie: TIP caracter
@@ -50,13 +56,44 @@ instructiuni: linie ';'
             | instructiuni linie ';'
             ;
 
+operations  :operations operatie linie  {;}
+            |operations linie operatie  {;}
+            |operatie linie             {;}
+            |linie operatie             {;}
+            |operatie                   {;}
+            |linie                      {;}
+            ;
+
 linie   : asignare                      {;}
             | exit_command              {exit(EXIT_SUCCESS);}
             | print expresie            {printf("%d", $2);}
+            | operatie                  {;}
             | linie asignare            {;}
             | linie print expresie      {printf("%d", $3);}
             | linie exit_command        {exit(EXIT_SUCCESS);}
+            | linie operatie            {;}
             ;
+
+operatie: if_block
+            | while_block
+            ;
+
+if_block: IF comparatie THEN bloc ELSE bloc 
+            | IF comparatie THEN bloc       
+            ;
+
+while_block: WHILE comparatie DO bloc       
+            ;
+
+comparatie: termen {$$=$1;}
+            | comparatie EQ comparatie {($1==$3)?($$=true):($$=false);}
+            | comparatie NEQ comparatie {($1!=$3)?($$=true):($$=false);}
+            | comparatie '<' comparatie {($1<$3)?($$=true):($$=false);}
+            | comparatie '>' comparatie {($1>$3)?($$=true):($$=false);}
+            | comparatie LE comparatie {($1<=$3)?($$=true):($$=false);}
+            | comparatie ME comparatie {($1>=$3)?($$=true):($$=false);}
+            ;
+
 
 asignare: caracter '=' expresie         {updateVal($1, $3);}
             | caracter '=' caracter     {updateVal($1, getVal($3));}

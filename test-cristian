@@ -1,0 +1,8 @@
+numar a, numar b;
+incepe
+a=2;
+b=6;
+afiseaza b-a;
+afiseaza b;
+afiseaza b+a;
+sfarsit
