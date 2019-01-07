@@ -11,10 +11,15 @@
     extern char* yytext;
     extern int yylineno;
 %}
-%union {int num; char character;float fl}
-%start linie
+%union {int num; char character;}
+%start program
 %token print
 %token exit_command
+%token return
+%token define
+%token class_definition
+%token acces_specifier
+%token function_definition
 %token <num> numar
 %token <character> caracter
 %type <num> linie expresie termen
@@ -41,15 +46,28 @@ functions   :functions function
             |function
             ;
 
-class   :keyword_class class_name '{' acces_specifier ':' linie functions '}' ';'
+class   :class_definition '{' acces_specifier ':' linie functions '}' ';'
         ;
 
-function   :type function_name '(' parameters ')' '{' linie operations return '}'
+function    :function_definition '(' parameters ')' '{' linie operations return termen '}'
+            |function_definition '('  ')' '{' linie operations return termen '}'
             ;
 
-parameters  :parameters parametru
-            |parametru
+parameters  :parameters termen
+            |termen
             ;
+
+operations  :operations operatie linie
+            |operations linie operatie
+            |operatie linie
+            |linie operatie
+            |operatie
+            |linie
+            ;
+
+main    :main_definiton '(' parameters ')' '{' linie operations return termen '}'
+        |main_definiton '('  ')' '{' linie operations return termen '}'
+        ; 
 
 
 

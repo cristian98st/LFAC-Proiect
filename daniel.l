@@ -17,12 +17,14 @@
 "char "[a-zA-Z]+	{return function_definition;}
 "bool "[a-zA-Z]+	{return function_definition;}
 "float "[a-zA-Z]+	{return function_definition;}
+"int main"			{return main_definition;}
+"void main"			{return main_definition;}
 [a-zA-Z]            {yylval.character = yytext[0]; return caracter;}
 [0-9]+              {yylval.num = atoi(yytext); return numar;}
 [ \t\n]             ;
-[-+=;\/\*{}:]              {return yytext[0];}
+[-+=;\/\*{}:<>]       {return yytext[0];}
 .                   {ECHO; yyerror("caracter invalid");}
 
 %%
-
+ 
 int yywrap (void) {return 1;}
