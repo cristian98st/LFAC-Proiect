@@ -12,7 +12,7 @@
 "termina"           {return exit_command;}
 "daca"              {return IF;}
 "atunci"            {return THEN;}
-"acada"             {return EIF;}
+"acad"             {return EIF;}
 "altfel"            {return ELSE;}
 "cattimp"           {return WHILE;}
 "executa"           {return DO;}

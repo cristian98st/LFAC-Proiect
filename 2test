@@ -1,0 +1,15 @@
+numar a;
+numar b;
+caracter c;
+main
+incepe
+    a=2;
+    b=6;
+    c=x;
+    daca a<b
+        a=142;
+        afiseaza a/b, %i;
+    acad
+    afiseaza c, %c;
+    afiseaza b, %i;
+sfarsit

@@ -1,0 +1,11 @@
+numar a, numar b;
+numar c;
+cuvant c;
+main
+incepe
+    a=2;
+    b=6;
+    afiseaza b*a, %i;
+    afiseaza a/0, %i;
+    afiseaza z, %c;
+sfarsit

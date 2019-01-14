@@ -20,7 +20,7 @@
 %start program
 %token print
 %token exit_command
-%token TIP BEGN END IF THEN ELSE EIF WHILE DO EQ NEQ LE ME INT CHAR MAIN CLASS BR BL
+%token TIP BEGN END IF THEN ELSE EIF WHILE DO EQ NEQ LE ME INT CHAR MAIN CLASS BR BL COMMENT 
 %token <num> numar
 %token <character> caracter caractere
 %type <num> expresie termen
@@ -35,7 +35,7 @@
 program : declaratii functions class functions inmain bloc   {printf("Compilare reusita\n");}
         ;
 
-declaratii : declaratie ';'
+declaratii : declaratie ';' 
             | declaratii declaratie ';'
             | declaratie ',' declaratii
             ;
@@ -49,7 +49,7 @@ class      : CLASS caractere bloc
             |
             ;
 
-declaratie: TIP caracter        {if(checkVal($2)) {yyerror("Variabila deja in uz."); exit(1);}
+declaratie: TIP caracter       {if(checkVal($2)) {yyerror("Variabila deja in uz."); exit(1);}
                                     else if(TIP==numar) updateVali($2, -1);
                                         else updateValc($2, -1);}
             ;
@@ -69,8 +69,8 @@ parametru: TIP caracter
 bloc    : BEGN instructiuni END
             ;
 
-instructiuni: linie ';'
-            | instructiuni linie ';'
+instructiuni: linie ';' 
+        | instructiuni linie ';' 
             ;
 
 
