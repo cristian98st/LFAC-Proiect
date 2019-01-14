@@ -1,0 +1,9 @@
+caracter c;
+numar a;
+cuvant s;
+incepe
+a=2;
+c=x;
+afiseaza c, %c;
+afiseaza a, %i;
+sfarsit

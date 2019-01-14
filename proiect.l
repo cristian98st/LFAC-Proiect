@@ -12,6 +12,7 @@
 "termina"           {return exit_command;}
 "daca"              {return IF;}
 "atunci"            {return THEN;}
+"acada"             {return EIF;}
 "altfel"            {return ELSE;}
 "cattimp"           {return WHILE;}
 "executa"           {return DO;}
@@ -21,11 +22,13 @@
 "=<"                {return LE;}
 ">="                {return ME;}
 "=>"                {return ME;}
+"%i"                {return INT;}
+"%c"                {return CHAR;}
 [a-zA-Z]            {yylval.character = yytext[0]; return caracter;}
 [0-9]+              {yylval.num = atoi(yytext); return numar;}
 [ \t]               ;
 [/n]                  {yylineno++;}
-[-+=;\/\*,]              {return yytext[0];}
+[-+=;\/\*,<>]              {return yytext[0];}
 .                   {ECHO; yyerror("caracter invalid");}
 
 %%

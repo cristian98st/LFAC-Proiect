@@ -6,7 +6,8 @@
     #include <ctype.h>
     int symbols[52];
     int getVal(char symbol);
-    void updateVal(char symbol, int val);
+    void updateVali(char symbol, int val);
+    void updateValc(char symbol, int val);
     extern FILE* yyin;
     extern char* yytext;
     extern int yylineno;
@@ -18,12 +19,13 @@
 %start program
 %token print
 %token exit_command
-%token TIP BEGN END IF THEN ELSE WHILE DO EQ NEQ LE ME
+%token TIP BEGN END IF THEN ELSE EIF WHILE DO EQ NEQ LE ME INT CHAR
 %token <num> numar
 %token <character> caracter
-%type <num> linie expresie termen
+%type <num> expresie termen
 %type <character> asignare
 %type <num> comparatie
+%type <num> operatie
 %left EQ LE ME NEQ
 %left '+''-'
 %left '*''/'
@@ -56,47 +58,38 @@ instructiuni: linie ';'
             | instructiuni linie ';'
             ;
 
-operations  :operations operatie linie  {;}
-            |operations linie operatie  {;}
-            |operatie linie             {;}
-            |linie operatie             {;}
-            |operatie                   {;}
-            |linie                      {;}
-            ;
 
-linie   : asignare                      {;}
+linie   : asignare                      
             | exit_command              {exit(EXIT_SUCCESS);}
-            | print expresie            {printf("%d", $2);}
-            | operatie                  {;}
-            | linie asignare            {;}
+            | print expresie ', ' INT            {printf("%d", $2);}  
+            | print expresie ', ' CHAR            {printf("%c", $2);}                          
+            | linie asignare            
             | linie print expresie      {printf("%d", $3);}
             | linie exit_command        {exit(EXIT_SUCCESS);}
-            | linie operatie            {;}
+            | comparatie
+            | operatie
             ;
 
-operatie: if_block
-            | while_block
-            ;
-
-if_block: IF comparatie THEN bloc ELSE bloc 
-            | IF comparatie THEN bloc       
-            ;
-
-while_block: WHILE comparatie DO bloc       
+operatie : IF linie
+            | THEN linie
+            | ELSE linie
+            | EIF linie
+            | WHILE linie
+            | DO linie
             ;
 
 comparatie: termen {$$=$1;}
             | comparatie EQ comparatie {($1==$3)?($$=true):($$=false);}
             | comparatie NEQ comparatie {($1!=$3)?($$=true):($$=false);}
-            | comparatie '<' comparatie {($1<$3)?($$=true):($$=false);}
+            | comparatie '<' comparatie {if($1<$3) $$=true; else $$=false;}
             | comparatie '>' comparatie {($1>$3)?($$=true):($$=false);}
             | comparatie LE comparatie {($1<=$3)?($$=true):($$=false);}
             | comparatie ME comparatie {($1>=$3)?($$=true):($$=false);}
             ;
 
 
-asignare: caracter '=' expresie         {updateVal($1, $3);}
-            | caracter '=' caracter     {updateVal($1, getVal($3));}
+asignare: caracter '=' expresie         {updateVali($1, $3);}
+            | caracter '=' caracter     {updateValc($1, $3);}
             ;
 
 expresie: termen                        {$$=$1;}
@@ -136,8 +129,15 @@ int getVal(char symbol)
 }
 
 /* updates the value of a given symbol */
-void updateVal(char symbol, int val)
+void updateVali(char symbol, int val)
 {
+	int bucket = computeSymbolIndex(symbol);
+	symbols[bucket] = val;
+}
+
+void updateValc(char symbol, int val)
+{
+    char c=val;
 	int bucket = computeSymbolIndex(symbol);
 	symbols[bucket] = val;
 }
