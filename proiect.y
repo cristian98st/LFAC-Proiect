@@ -8,6 +8,7 @@
     int getVal(char symbol);
     void updateVali(char symbol, int val);
     void updateValc(char symbol, int val);
+    int checkVal(char symbol);
     extern FILE* yyin;
     extern char* yytext;
     extern int yylineno;
@@ -19,9 +20,9 @@
 %start program
 %token print
 %token exit_command
-%token TIP BEGN END IF THEN ELSE EIF WHILE DO EQ NEQ LE ME INT CHAR
+%token TIP BEGN END IF THEN ELSE EIF WHILE DO EQ NEQ LE ME INT CHAR MAIN CLASS BR BL
 %token <num> numar
-%token <character> caracter
+%token <character> caracter caractere
 %type <num> expresie termen
 %type <character> asignare
 %type <num> comparatie
@@ -31,7 +32,7 @@
 %left '*''/'
 %%
 
-program : declaratii bloc   {printf("Compilare reusita\n");}
+program : declaratii functions class functions inmain bloc   {printf("Compilare reusita\n");}
         ;
 
 declaratii : declaratie ';'
@@ -39,9 +40,23 @@ declaratii : declaratie ';'
             | declaratie ',' declaratii
             ;
 
-declaratie: TIP caracter
-            | TIP caracter '(' parametrii ')'
-            | TIP caracter '(' ')'
+inmain      : MAIN
+            | MAIN declaratii
+            | MAIN functions
+            ;
+
+class      : CLASS caractere bloc
+            |
+            ;
+
+declaratie: TIP caracter        {if(checkVal($2)) {yyerror("Variabila deja in uz."); exit(1);}
+                                    else if(TIP==numar) updateVali($2, -1);
+                                        else updateValc($2, -1);}
+            ;
+            
+functions   : TIP caractere BL parametrii BR bloc
+            | TIP caractere BL BR bloc
+            |
             ;
 
 parametrii: parametru
@@ -61,8 +76,10 @@ instructiuni: linie ';'
 
 linie   : asignare                      
             | exit_command              {exit(EXIT_SUCCESS);}
-            | print expresie ', ' INT            {printf("%d", $2);}  
-            | print expresie ', ' CHAR            {printf("%c", $2);}                          
+            | print expresie ', ' INT            {if($2!=0) printf("%d\n", $2);
+                                                    else {yyerror("Variabila este nedeclarata."); exit(1);}}  
+            | print expresie ', ' CHAR            {if($2!=0) printf("%c\n", $2);
+                                                    else {yyerror("Variabila este nedeclarata."); exit(1);}}                          
             | linie asignare            
             | linie print expresie      {printf("%d", $3);}
             | linie exit_command        {exit(EXIT_SUCCESS);}
@@ -96,7 +113,7 @@ expresie: termen                        {$$=$1;}
             | expresie '+' termen       {$$=$1+$3;}
             | expresie '-' termen       {$$=$1-$3;}
             | expresie '*' termen       {$$=$1*$3;}
-            | expresie '/' termen       {if($3==0) {yyerror("Impartirea la 0 nu are sens");}
+            | expresie '/' termen        {if($3==0) {yyerror("Impartirea la 0 nu are sens"); exit(1);}
                                         else $$=$1/$3;}
             ;
 
@@ -140,6 +157,11 @@ void updateValc(char symbol, int val)
     char c=val;
 	int bucket = computeSymbolIndex(symbol);
 	symbols[bucket] = val;
+}
+int checkVal(char symbol)
+{
+    int bucket = computeSymbolIndex(symbol);
+    return symbols[bucket];
 }
 
 int main(int argc, char** argv){

@@ -1,9 +1,19 @@
 caracter c;
 numar a;
 cuvant s;
+clasa CLASA
 incepe
-a=2;
-c=x;
-afiseaza c, %c;
-afiseaza a, %i;
+    a=2;
+sfarsit
+numar FUNCTIE (numar x)
+incepe
+    x=23;
+    afiseaza x, %i;
+sfarsit
+main
+incepe
+    a=4;
+    c=x;
+    afiseaza a, %i;
+    afiseaza c, %c;
 sfarsit
