@@ -12,8 +12,8 @@ incepe
 sfarsit
 main
 incepe
-    a=4;
+    CLASA->a=120;
     c=x;
-    afiseaza a, %i;
+    afiseaza CLASA->a, %i;
     afiseaza c, %c;
 sfarsit

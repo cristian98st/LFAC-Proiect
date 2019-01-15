@@ -20,7 +20,7 @@
 %start program
 %token print
 %token exit_command
-%token TIP BEGN END IF THEN ELSE EIF WHILE DO EQ NEQ LE ME INT CHAR MAIN CLASS BR BL COMMENT 
+%token TIP BEGN END IF THEN ELSE EIF WHILE DO EQ NEQ LE ME INT CHAR MAIN CLASS BR BL COMMENT ACCES
 %token <num> numar
 %token <character> caracter caractere
 %type <num> expresie termen
@@ -107,6 +107,7 @@ comparatie: termen {$$=$1;}
 
 asignare: caracter '=' expresie         {updateVali($1, $3);}
             | caracter '=' caracter     {updateValc($1, $3);}
+            | caractere ACCES asignare
             ;
 
 expresie: termen                        {$$=$1;}
@@ -123,6 +124,7 @@ termeni : termen
 
 termen  : numar
             | caracter                      {$$=getVal($1);}
+            | caractere ACCES termen
             ;
 
 %%
@@ -138,14 +140,12 @@ int computeSymbolIndex(char token)
 	return idx;
 } 
 
-/* returns the value of a given symbol */
 int getVal(char symbol)
 {
 	int bucket = computeSymbolIndex(symbol);
 	return symbols[bucket];
 }
 
-/* updates the value of a given symbol */
 void updateVali(char symbol, int val)
 {
 	int bucket = computeSymbolIndex(symbol);
@@ -165,7 +165,6 @@ int checkVal(char symbol)
 }
 
 int main(int argc, char** argv){
-	/* init symbol table */
 	int i;
 	for(i=0; i<52; i++) {
 		symbols[i] = 0;

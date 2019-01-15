@@ -5,7 +5,7 @@ main
 incepe
     a=2;
     b=6;
-    c=x;
+    c=z;
     daca a<b
         a=142;
         afiseaza a/b, %i;

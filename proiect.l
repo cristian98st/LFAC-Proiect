@@ -26,6 +26,7 @@
 "=>"                {return ME;}
 "%i"                {return INT;}
 "%c"                {return CHAR;}
+"->"                {return ACCES;}
 [(]                 {return BL;}
 [)]                 {return BR;}
 [A-Z]*              {return caractere;}
